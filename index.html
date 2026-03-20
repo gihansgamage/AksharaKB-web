@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Candidate bar — LIGHT liquid glass.
+  Frosted white over the blurred app background.
+  Layers: shadow → white frost → top shine → subtle border.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Soft drop shadow -->
+    <item android:top="4dp" android:bottom="-4dp" android:left="2dp" android:right="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="#18000000"/>
+            <corners android:radius="100dp"/>
+        </shape>
+    </item>
+
+    <!-- Glass body — 40% white frost -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#66FFFFFF"/>
+            <corners android:radius="100dp"/>
+        </shape>
+    </item>
+
+    <!-- Top-half shine -->
+    <item android:bottom="23dp">
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="270"
+                android:startColor="#33FFFFFF"
+                android:endColor="#00FFFFFF"
+                android:type="linear"/>
+            <corners android:radius="100dp"/>
+        </shape>
+    </item>
+
+    <!-- Frost rim -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#00000000"/>
+            <stroke android:width="0.8dp" android:color="#44FFFFFF"/>
+            <corners android:radius="100dp"/>
+        </shape>
+    </item>
+
+</layer-list>
