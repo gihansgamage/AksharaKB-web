@@ -1,46 +1,1040 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  Candidate bar — LIGHT liquid glass.
-  Frosted white over the blurred app background.
-  Layers: shadow → white frost → top shine → subtle border.
--->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AksharaKB — Sinhala · Tamil · English Keyboard</title>
+<meta name="description" content="AksharaKB is a free, open-source multilingual keyboard for Android supporting Sinhala (Wijesekara & Phonetic), Tamil, and English with liquid glass design."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:         #0e0e10;
+  --bg2:        #13131a;
+  --glass-dark: rgba(255,255,255,0.06);
+  --glass-med:  rgba(255,255,255,0.10);
+  --glass-hi:   rgba(255,255,255,0.16);
+  --border:     rgba(255,255,255,0.12);
+  --border-hi:  rgba(255,255,255,0.22);
+  --text:       #f0eff4;
+  --text-muted: rgba(240,239,244,0.5);
+  --text-dim:   rgba(240,239,244,0.3);
+  --accent:     #c8b8ff;
+  --accent2:    #8bd5ca;
+  --accent3:    #ffc9a8;
+  --shine:      rgba(255,255,255,0.18);
+  --radius:     20px;
+  --radius-lg:  32px;
+}
 
-    <!-- Soft drop shadow -->
-    <item android:top="4dp" android:bottom="-4dp" android:left="2dp" android:right="2dp">
-        <shape android:shape="rectangle">
-            <solid android:color="#18000000"/>
-            <corners android:radius="100dp"/>
-        </shape>
-    </item>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <!-- Glass body — 40% white frost -->
-    <item>
-        <shape android:shape="rectangle">
-            <solid android:color="#66FFFFFF"/>
-            <corners android:radius="100dp"/>
-        </shape>
-    </item>
+html { scroll-behavior: smooth; }
 
-    <!-- Top-half shine -->
-    <item android:bottom="23dp">
-        <shape android:shape="rectangle">
-            <gradient
-                android:angle="270"
-                android:startColor="#33FFFFFF"
-                android:endColor="#00FFFFFF"
-                android:type="linear"/>
-            <corners android:radius="100dp"/>
-        </shape>
-    </item>
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 300;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
 
-    <!-- Frost rim -->
-    <item>
-        <shape android:shape="rectangle">
-            <solid android:color="#00000000"/>
-            <stroke android:width="0.8dp" android:color="#44FFFFFF"/>
-            <corners android:radius="100dp"/>
-        </shape>
-    </item>
+/* ── Aurora background ───────────────────────────────────── */
+.aurora {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.aurora-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.18;
+  animation: drift 18s ease-in-out infinite alternate;
+}
+.aurora-orb:nth-child(1) { width: 800px; height: 800px; background: #6a4fff; top: -200px; left: -200px; animation-duration: 20s; }
+.aurora-orb:nth-child(2) { width: 600px; height: 600px; background: #00c4a8; top: 30%; right: -150px; animation-duration: 25s; animation-delay: -5s; }
+.aurora-orb:nth-child(3) { width: 500px; height: 500px; background: #ff6b6b; bottom: -100px; left: 30%; animation-duration: 22s; animation-delay: -8s; }
+@keyframes drift {
+  from { transform: translate(0, 0) scale(1); }
+  to   { transform: translate(60px, 40px) scale(1.08); }
+}
 
-</layer-list>
+/* ── Layout ──────────────────────────────────────────────── */
+.container { max-width: 1080px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+/* ── Glass mixin ─────────────────────────────────────────── */
+.glass {
+  background: var(--glass-dark);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--shine) 0%, transparent 50%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── Nav ─────────────────────────────────────────────────── */
+nav {
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: calc(100% - 48px);
+  max-width: 900px;
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: rgba(14,14,16,0.7);
+  backdrop-filter: blur(32px);
+  -webkit-backdrop-filter: blur(32px);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+}
+.nav-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text);
+  text-decoration: none;
+}
+.nav-links { display: flex; gap: 8px; align-items: center; }
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 400;
+  padding: 6px 14px;
+  border-radius: 100px;
+  transition: all 0.2s;
+  letter-spacing: 0.03em;
+}
+.nav-links a:hover { color: var(--text); background: var(--glass-med); }
+.nav-cta {
+  background: var(--glass-hi) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border-hi) !important;
+}
+
+/* ── Hero ────────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 120px 0 80px;
+}
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: var(--glass-med);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.75rem;
+  color: var(--accent);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  backdrop-filter: blur(12px);
+}
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.hero-title em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  max-width: 420px;
+  margin-bottom: 40px;
+  line-height: 1.7;
+}
+.hero-langs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.lang-chip {
+  padding: 8px 18px;
+  background: var(--glass-med);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.85rem;
+  backdrop-filter: blur(12px);
+  transition: all 0.25s;
+}
+.lang-chip:hover { background: var(--glass-hi); border-color: var(--border-hi); }
+.lang-chip span { opacity: 0.55; margin-right: 6px; font-family: 'JetBrains Mono'; font-size: 0.78rem; }
+
+.hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 100px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.25s;
+  cursor: pointer;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-primary {
+  background: linear-gradient(135deg, rgba(200,184,255,0.25), rgba(139,213,202,0.15));
+  border: 1px solid rgba(200,184,255,0.4);
+  color: var(--text);
+  backdrop-filter: blur(12px);
+}
+.btn-primary:hover { background: linear-gradient(135deg, rgba(200,184,255,0.35), rgba(139,213,202,0.25)); transform: translateY(-1px); }
+.btn-ghost {
+  background: var(--glass-dark);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  backdrop-filter: blur(12px);
+}
+.btn-ghost:hover { color: var(--text); background: var(--glass-med); transform: translateY(-1px); }
+
+/* ── Keyboard mockup ─────────────────────────────────────── */
+.keyboard-mockup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(40px);
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+  animation: float 6s ease-in-out infinite;
+}
+@keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+.kb-bar {
+  height: 40px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 100px;
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 8px;
+  margin-bottom: 4px;
+  backdrop-filter: blur(10px);
+}
+.kb-bar-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.3); }
+.kb-bar-text { font-size: 0.7rem; color: rgba(255,255,255,0.4); font-family: 'JetBrains Mono'; flex:1; }
+.kb-bar-emoji { font-size: 0.9rem; margin-left: auto; }
+
+.kb-row { display: flex; gap: 5px; justify-content: center; }
+.kb-key {
+  height: 38px;
+  min-width: 34px;
+  padding: 0 8px;
+  background: rgba(64,64,64,0.55);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  border: none;
+  color: rgba(255,255,255,0.9);
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+  position: relative;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+  cursor: default;
+}
+.kb-key::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+  border-radius: inherit;
+}
+.kb-key.wide  { min-width: 56px; }
+.kb-key.wider { min-width: 80px; }
+.kb-key.space { min-width: 140px; }
+.kb-key.spec  { background: rgba(40,40,40,0.65); color: rgba(255,255,255,0.7); }
+.kb-key.active { background: rgba(200,184,255,0.3); border: 1px solid rgba(200,184,255,0.5); }
+.kb-key .hint { position: absolute; top: 2px; right: 3px; font-size: 0.44rem; opacity: 0.5; }
+
+/* ── Section styles ──────────────────────────────────────── */
+section { padding: 100px 0; }
+.section-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-family: 'JetBrains Mono';
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); max-width: 80px; }
+.section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 300;
+  line-height: 1.15;
+  margin-bottom: 48px;
+}
+
+/* ── Features ────────────────────────────────────────────── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.feature-card {
+  padding: 28px;
+  background: var(--glass-dark);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+.feature-card:hover { border-color: var(--border-hi); transform: translateY(-3px); background: var(--glass-med); }
+.feature-icon { font-size: 1.6rem; margin-bottom: 14px; display: block; }
+.feature-title { font-size: 0.95rem; font-weight: 500; margin-bottom: 8px; }
+.feature-desc { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ── User Guide ──────────────────────────────────────────── */
+.guide-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.guide-block {
+  padding: 32px;
+  background: var(--glass-dark);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+}
+.guide-block::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border-hi), transparent);
+}
+.guide-block h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-weight: 400;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.guide-block h3 span { font-size: 1.4rem; }
+.guide-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.guide-step-num {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  background: var(--glass-hi);
+  border: 1px solid var(--border-hi);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--accent);
+  font-family: 'JetBrains Mono';
+  font-weight: 500;
+}
+.code-pill {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(200,184,255,0.12);
+  border: 1px solid rgba(200,184,255,0.25);
+  border-radius: 6px;
+  font-family: 'JetBrains Mono';
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin: 2px;
+}
+.sinhala-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-top: 8px;
+}
+.sinhala-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  vertical-align: middle;
+}
+.sinhala-table td:first-child { color: var(--text-muted); }
+.sinhala-table td:last-child { font-size: 1rem; color: var(--accent2); }
+.sinhala-table tr:last-child td { border-bottom: none; }
+
+/* ── Privacy Policy ─────────────────────────────────────── */
+.privacy-wrapper {
+  background: var(--glass-dark);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+}
+.privacy-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+}
+.privacy-section { margin-bottom: 40px; }
+.privacy-section h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin-bottom: 14px;
+  color: var(--accent);
+}
+.privacy-section p, .privacy-section li {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin-bottom: 8px;
+}
+.privacy-section ul { padding-left: 20px; }
+.privacy-section li::marker { color: var(--accent); }
+.privacy-updated {
+  font-family: 'JetBrains Mono';
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+  padding: 8px 16px;
+  background: var(--glass-med);
+  border-radius: 100px;
+  display: inline-block;
+}
+
+/* ── Developer ───────────────────────────────────────────── */
+.dev-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 40px;
+  align-items: center;
+  padding: 48px;
+  background: var(--glass-dark);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+}
+.dev-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(200,184,255,0.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.dev-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(200,184,255,0.3), rgba(139,213,202,0.2));
+  border: 1px solid var(--border-hi);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+.dev-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  margin-bottom: 6px;
+}
+.dev-role {
+  font-size: 0.82rem;
+  color: var(--accent);
+  font-family: 'JetBrains Mono';
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+.dev-bio {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  max-width: 520px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.dev-links { display: flex; gap: 10px; flex-wrap: wrap; }
+.dev-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: var(--glass-med);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.dev-link:hover { color: var(--text); background: var(--glass-hi); border-color: var(--border-hi); }
+
+/* ── Footer ──────────────────────────────────────────────── */
+footer {
+  padding: 60px 0 40px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+.footer-logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 300;
+  margin-bottom: 12px;
+}
+.footer-tagline {
+  font-size: 0.82rem;
+  color: var(--text-dim);
+  margin-bottom: 32px;
+}
+.footer-links {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.footer-links a {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--text); }
+.footer-copy {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  font-family: 'JetBrains Mono';
+}
+
+/* ── Divider ─────────────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0;
+}
+
+/* ── Scroll reveal ───────────────────────────────────────── */
+.reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s cubic-bezier(0.16, 1, 0.3, 1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+.reveal-delay-5 { transition-delay: 0.5s; }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 860px) {
+  .hero-inner { grid-template-columns: 1fr; }
+  .keyboard-mockup { display: none; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .guide-grid { grid-template-columns: 1fr; }
+  .dev-card { grid-template-columns: 1fr; text-align: center; }
+  .dev-links { justify-content: center; }
+  .nav-links a:not(.nav-cta) { display: none; }
+}
+@media (max-width: 560px) {
+  .features-grid { grid-template-columns: 1fr; }
+  .privacy-wrapper { padding: 28px 20px; }
+}
+
+/* ── Active nav highlighting ─────────────────────────────── */
+.nav-links a.active {
+  color: var(--text);
+  background: var(--glass-med);
+}
+
+/* ── Smooth shimmer on section titles ────────────────────── */
+.shimmer {
+  background: linear-gradient(90deg, var(--text) 0%, var(--accent) 40%, var(--accent2) 70%, var(--text) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 6s linear infinite;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+</style>
+</head>
+<body>
+
+<!-- Aurora -->
+<div class="aurora">
+  <div class="aurora-orb"></div>
+  <div class="aurora-orb"></div>
+  <div class="aurora-orb"></div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">AksharaKB</a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#guide">User Guide</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#developer">Developer</a>
+      <a href="https://play.google.com/store/apps/details?id=com.gihansgamage.aksharakb" class="nav-cta" target="_blank">Download App ↓</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-badge reveal">
+          <span class="badge-dot"></span>
+          Free & Open Source · Android
+        </div>
+        <h1 class="hero-title reveal reveal-delay-1">
+          Type in your<br><em>own language.</em>
+        </h1>
+        <p class="hero-sub reveal reveal-delay-2">
+          AksharaKB is a beautiful multilingual keyboard for Android with full Sinhala, Tamil, and English support — designed with a liquid glass aesthetic.
+        </p>
+        <div class="hero-langs reveal reveal-delay-3">
+          <div class="lang-chip"><span>සිංහල</span>Sinhala</div>
+          <div class="lang-chip"><span>தமிழ்</span>Tamil</div>
+          <div class="lang-chip"><span>EN</span>English</div>
+        </div>
+        <div class="hero-actions reveal reveal-delay-4">
+          <a href="https://play.google.com/store/apps/details?id=com.gihansgamage.aksharakb" class="btn btn-primary" target="_blank">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5v-17c0-.83 1-.95 1.41-.42l15 8.5c.39.22.39.79 0 1.01l-15 8.5C3.99 21.45 3 21.33 3 20.5z"/></svg>
+            Get on Google Play
+          </a>
+        </div>
+      </div>
+
+      <!-- Keyboard mockup -->
+      <div class="reveal reveal-delay-3">
+        <div class="keyboard-mockup">
+          <div class="kb-bar">
+            <div class="kb-bar-dot"></div>
+            <div class="kb-bar-dot"></div>
+            <div class="kb-bar-text">සිංහල</div>
+            <div class="kb-bar-emoji">😊</div>
+            <div style="width:5px;height:14px;background:rgba(255,255,255,0.1);border-radius:2px;margin:0 4px;"></div>
+            <div class="kb-bar-text" style="flex:none;font-size:0.7rem;">⚙</div>
+          </div>
+          <!-- Row 1 -->
+          <div class="kb-row">
+            <div class="kb-key">ු<span class="hint">ූ</span></div>
+            <div class="kb-key">අ</div>
+            <div class="kb-key">ැ</div>
+            <div class="kb-key">ර</div>
+            <div class="kb-key">එ</div>
+            <div class="kb-key active">හ</div>
+            <div class="kb-key">ම<span class="hint">ඹ</span></div>
+            <div class="kb-key">ස</div>
+            <div class="kb-key">ද<span class="hint">ඳ</span></div>
+            <div class="kb-key">ච</div>
+          </div>
+          <!-- Row 2 -->
+          <div class="kb-row">
+            <div class="kb-key">්</div>
+            <div class="kb-key">ි</div>
+            <div class="kb-key">ා</div>
+            <div class="kb-key">ෙ</div>
+            <div class="kb-key">ට</div>
+            <div class="kb-key">ය</div>
+            <div class="kb-key">ව</div>
+            <div class="kb-key">න</div>
+            <div class="kb-key">ක</div>
+            <div class="kb-key">ත</div>
+          </div>
+          <!-- Row 3 -->
+          <div class="kb-row">
+            <div class="kb-key spec wide">⇧</div>
+            <div class="kb-key">ජ<span class="hint">ඦ</span></div>
+            <div class="kb-key">ඩ<span class="hint">ඬ</span></div>
+            <div class="kb-key">ඉ</div>
+            <div class="kb-key">බ</div>
+            <div class="kb-key">ප</div>
+            <div class="kb-key">ල</div>
+            <div class="kb-key">ග<span class="hint">ඟ</span></div>
+            <div class="kb-key spec wide">⌫</div>
+          </div>
+          <!-- Row 4 -->
+          <div class="kb-row">
+            <div class="kb-key spec wider">?123</div>
+            <div class="kb-key">,</div>
+            <div class="kb-key space spec" style="font-size:0.65rem;letter-spacing:0.05em;">සිංහල</div>
+            <div class="kb-key">.</div>
+            <div class="kb-key spec wider">↵</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Features -->
+<section id="features">
+  <div class="container">
+    <p class="section-label reveal">What's included</p>
+    <h2 class="section-title reveal reveal-delay-1">Everything you need<br>to type in <span class="shimmer">three languages.</span></h2>
+    <div class="features-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <span class="feature-icon">⌨️</span>
+        <div class="feature-title">Wijesekara Layout</div>
+        <div class="feature-desc">The standard Sri Lankan Sinhala keyboard layout with all 58 consonants, vowels, and special characters including ZWJ compounds.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <span class="feature-icon">🔤</span>
+        <div class="feature-title">Phonetic Input</div>
+        <div class="feature-desc">Type Sinhala and Tamil phonetically using English letters. <span class="code-pill">ka</span> → ක, <span class="code-pill">la</span> → ල. Smart greedy matching for natural typing flow.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <span class="feature-icon">🌐</span>
+        <div class="feature-title">Three Languages</div>
+        <div class="feature-desc">Seamlessly switch between Sinhala, Tamil, and English with one tap. All three active simultaneously in the candidate bar.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <span class="feature-icon">✨</span>
+        <div class="feature-title">Liquid Glass UI</div>
+        <div class="feature-desc">Frosted glass keys with real-time window blur, soft shadows, and top-shine gradients. Fully adapts to dark and light themes.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <span class="feature-icon">🔮</span>
+        <div class="feature-title">Word Predictions</div>
+        <div class="feature-desc">Local word prediction with learning. English suggestions enhanced by Google Suggest API. Emoji suggestions for expressive typing.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <span class="feature-icon">😀</span>
+        <div class="feature-title">Emoji Keyboard</div>
+        <div class="feature-desc">Full emoji keyboard with 1600+ emojis across 12 categories, recent history, scrollable grid, and quick action bar.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <span class="feature-icon">🖖</span>
+        <div class="feature-title">Long-Press Popups</div>
+        <div class="feature-desc">Long-press any key to reveal alternate characters. ග → ඟ, ද → ධ/ඳ, ජ → ඦ. Custom popup window built entirely in-app.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <span class="feature-icon">📱</span>
+        <div class="feature-title">Smart Auto-caps</div>
+        <div class="feature-desc">Automatic capitalization at sentence starts. Three-state caps: single shift, caps lock, and off. Works across all three languages.</div>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <span class="feature-icon">🎛️</span>
+        <div class="feature-title">Symbols + More</div>
+        <div class="feature-desc">Full symbols keyboard with shifted layer for ©®™€£¥. Clipboard history, haptic feedback, and popup key previews.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- User Guide -->
+<section id="guide">
+  <div class="container">
+    <p class="section-label reveal">How to use</p>
+    <h2 class="section-title reveal reveal-delay-1">User Guide</h2>
+    <div class="guide-grid">
+
+      <div class="guide-block reveal reveal-delay-1">
+        <h3><span>⚙️</span> Setup</h3>
+        <div class="guide-step">
+          <div class="guide-step-num">1</div>
+          <div>Open <strong>Settings → System → Language & Input → Manage Keyboards</strong> and enable <em>AksharaKB</em>.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">2</div>
+          <div>Tap any text field, then tap the keyboard icon in the system bar and choose <em>AksharaKB</em>.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">3</div>
+          <div>Open the app and tap <em>Keyboard Settings</em> to choose your theme, languages, and Sinhala layout.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">4</div>
+          <div>Tap <span class="code-pill">🌐En</span> in the candidate bar to cycle through your enabled languages.</div>
+        </div>
+      </div>
+
+      <div class="guide-block reveal reveal-delay-2">
+        <h3><span>⌨️</span> Wijesekara Layout</h3>
+        <table class="sinhala-table">
+          <tr><td>Normal press</td><td>Type the main character shown</td></tr>
+          <tr><td>Shift + key</td><td>Type the shifted character (shown when ⇧ active)</td></tr>
+          <tr><td>Long press</td><td>Shows popup with alternate characters</td></tr>
+          <tr><td>Long press <span class="code-pill">්</span></td><td>Select <span class="code-pill">්‍</span> for ZWJ compounds</td></tr>
+          <tr><td>ක + <span class="code-pill">්‍</span> + ෂ</td><td>Types ක්‍ෂ (compound)</td></tr>
+          <tr><td>Shift + ම</td><td>Types ඹ</td></tr>
+        </table>
+      </div>
+
+      <div class="guide-block reveal reveal-delay-1">
+        <h3><span>🔤</span> Phonetic Mode</h3>
+        <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:16px;">Type English letters — the keyboard converts to Sinhala or Tamil automatically.</p>
+        <table class="sinhala-table">
+          <tr><td><span class="code-pill">ka</span></td><td>ක</td><td><span class="code-pill">la</span></td><td>ල</td></tr>
+          <tr><td><span class="code-pill">si</span></td><td>සි</td><td><span class="code-pill">aa</span></td><td>ආ</td></tr>
+          <tr><td><span class="code-pill">sh</span></td><td>ශ</td><td><span class="code-pill">th</span></td><td>ථ</td></tr>
+          <tr><td><span class="code-pill">dh</span></td><td>ධ</td><td><span class="code-pill">ll</span></td><td>ළ</td></tr>
+          <tr><td><span class="code-pill">zh</span></td><td>ழ (Tamil)</td><td><span class="code-pill">rr</span></td><td>ற (Tamil)</td></tr>
+        </table>
+      </div>
+
+      <div class="guide-block reveal reveal-delay-2">
+        <h3><span>😀</span> Emoji & Symbols</h3>
+        <div class="guide-step">
+          <div class="guide-step-num">→</div>
+          <div>Tap <span class="code-pill">😊</span> in the candidate bar to open the emoji keyboard.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">→</div>
+          <div>Tap category icons at the top to switch emoji categories. The <span class="code-pill">🕐</span> tab shows recently used emojis.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">→</div>
+          <div>Scroll up/down to browse all emojis in a category.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">→</div>
+          <div>Tap <span class="code-pill">?123</span> to open the symbols keyboard. Tap <span class="code-pill">⇧</span> within symbols for ©®™€£¥ and more.</div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-step-num">→</div>
+          <div>Word predictions appear in the candidate bar as you type. Tap any chip to insert and learn that word.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Privacy Policy -->
+<section id="privacy">
+  <div class="container">
+    <p class="section-label reveal">Legal</p>
+    <h2 class="section-title reveal reveal-delay-1">Privacy Policy</h2>
+    <div class="privacy-wrapper reveal reveal-delay-2">
+      <div class="privacy-updated">Last updated: March 2026</div>
+
+      <div class="privacy-section">
+        <h3>Overview</h3>
+        <p>AksharaKB ("the App") is a free, open-source Android keyboard application developed by Gihan S Gamage. This Privacy Policy explains what information the App accesses, how it is used, and what we do not collect.</p>
+        <p>We are committed to your privacy. AksharaKB is designed to work entirely on your device, and we do not collect, store, or transmit your personal data or keystrokes.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h3>Information We Do NOT Collect</h3>
+        <ul>
+          <li>We do <strong>not</strong> collect or log any text you type.</li>
+          <li>We do <strong>not</strong> transmit your keystrokes, messages, passwords, or clipboard content to any server.</li>
+          <li>We do <strong>not</strong> collect personal identifiers such as name, email, phone number, or device ID.</li>
+          <li>We do <strong>not</strong> use analytics SDKs or crash reporting services that transmit personal data.</li>
+          <li>We do <strong>not</strong> display advertisements.</li>
+        </ul>
+      </div>
+
+      <div class="privacy-section">
+        <h3>Internet Access</h3>
+        <p>The App requests INTERNET permission solely to fetch English word suggestions from Google's autocomplete API (<code>suggestqueries.google.com</code>). Only the partial word you have typed is sent as a query string — no identifying information is attached. This feature can be disabled by turning off Word Predictions in Settings.</p>
+        <p>Google's use of query data is governed by <a href="https://policies.google.com/privacy" target="_blank" style="color:var(--accent);">Google's Privacy Policy</a>.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h3>Local Storage</h3>
+        <p>The following data is stored <strong>locally on your device only</strong> and is never transmitted:</p>
+        <ul>
+          <li>Keyboard preferences (theme, language selections, layout choice)</li>
+          <li>Learned words for personalised word prediction</li>
+          <li>Recent emoji history</li>
+        </ul>
+        <p>This data is stored using Android's SharedPreferences API and can be cleared at any time by clearing the app's data in your device settings.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h3>Permissions</h3>
+        <ul>
+          <li><strong>VIBRATE</strong> — for haptic feedback on keypresses. Optional; can be disabled in Settings.</li>
+          <li><strong>INTERNET</strong> — for word suggestions only (see above).</li>
+          <li><strong>READ_MEDIA_IMAGES / READ_EXTERNAL_STORAGE</strong> — reserved for potential future background image feature. Not currently used.</li>
+          <li><strong>RECORD_AUDIO</strong> — reserved for potential future voice input feature. Not currently used.</li>
+        </ul>
+      </div>
+
+      <div class="privacy-section">
+        <h3>Open Source</h3>
+        <p>AksharaKB is open-source software. The full source code is available on GitHub at <a href="https://github.com/gihansgamage/AksharaKB" target="_blank" style="color:var(--accent);">github.com/gihansgamage/AksharaKB</a>. You are welcome to audit the code to verify any of the claims made in this policy.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h3>Children's Privacy</h3>
+        <p>AksharaKB is not directed at children under the age of 13. We do not knowingly collect any information from children. If you believe a child has provided information through the App, please contact us and we will take appropriate steps.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h3>Changes to This Policy</h3>
+        <p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated date. Continued use of the App after changes constitutes acceptance of the updated policy.</p>
+      </div>
+
+      <div class="privacy-section">
+        <h3>Contact</h3>
+        <p>If you have questions about this Privacy Policy, please contact us:</p>
+        <p>📧 <a href="mailto:gihansgamage@gmail.com" style="color:var(--accent);">gihansgamage@gmail.com</a></p>
+        <p>🐙 <a href="https://github.com/gihansgamage/AksharaKB" target="_blank" style="color:var(--accent);">github.com/gihansgamage/AksharaKB</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- Developer -->
+<section id="developer">
+  <div class="container">
+    <p class="section-label reveal">The maker</p>
+    <h2 class="section-title reveal reveal-delay-1">Developer</h2>
+    <div class="dev-card reveal reveal-delay-2">
+      <div class="dev-avatar">👨‍💻</div>
+      <div>
+        <div class="dev-name">Gihan S Gamage</div>
+        <div class="dev-role">Android Developer · Sri Lanka</div>
+        <p class="dev-bio">
+          Independent Android developer passionate about making technology more accessible for Sri Lankan language users. AksharaKB was built to give Sinhala and Tamil speakers a beautiful, modern keyboard that respects their privacy and works entirely offline.
+        </p>
+        <div class="dev-links">
+          <a href="https://github.com/gihansgamage" class="dev-link" target="_blank">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.49.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.15-1.11-1.46-1.11-1.46-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.52 2.34 1.08 2.91.83.09-.65.35-1.08.63-1.33-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.64 0 0 .84-.27 2.75 1.02.8-.22 1.65-.33 2.5-.33s1.7.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02.55 1.37.2 2.39.1 2.64.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10.01 10.01 0 0 0 22 12c0-5.52-4.48-10-10-10z"/></svg>
+            @gihansgamage
+          </a>
+          <a href="mailto:gihansgamage@gmail.com" class="dev-link">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            gihansgamage@gmail.com
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=com.gihansgamage.aksharakb" class="dev-link" target="_blank">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20.5v-17c0-.83 1-.95 1.41-.42l15 8.5c.39.22.39.79 0 1.01l-15 8.5C3.99 21.45 3 21.33 3 20.5z"/></svg>
+            Google Play
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-logo">AksharaKB</div>
+    <div class="footer-tagline">Sinhala · Tamil · English — for Android</div>
+    <div class="footer-links">
+      <a href="#features">Features</a>
+      <a href="#guide">User Guide</a>
+      <a href="#privacy">Privacy Policy</a>
+      <a href="#developer">Developer</a>
+      <a href="https://github.com/gihansgamage/AksharaKB" target="_blank">GitHub</a>
+      <a href="https://play.google.com/store/apps/details?id=com.gihansgamage.aksharakb" target="_blank">Google Play</a>
+    </div>
+    <div class="footer-copy">© 2026 Gihan S Gamage · Open Source · MIT License</div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// Active nav link
+const sections = document.querySelectorAll('section[id]');
+const navLinks = document.querySelectorAll('.nav-links a[href^="#"]');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 200) current = s.id; });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+
+// Keyboard key hover animation
+document.querySelectorAll('.kb-key').forEach(k => {
+  k.addEventListener('mouseenter', () => { k.style.transform = 'translateY(-2px)'; k.style.background = 'rgba(90,90,90,0.7)'; });
+  k.addEventListener('mouseleave', () => { k.style.transform = ''; k.style.background = ''; });
+});
+</script>
+</body>
+</html>
